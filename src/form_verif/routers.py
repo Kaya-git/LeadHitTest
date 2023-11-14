@@ -51,9 +51,11 @@ def get_form(
     # Если колличество запросов больше чем полей в форме, то проверяем что бы кол во верных запросов было равно кол ву полей в форме
     if quary_num > fields_num:
         for data in valid_data_list:
-            answer = db.search(where(data.keys()[0]) == data[data.keys()[0]])
+            data_key = list(data.keys())[0]
+            data_value = data[data_key]
+            answer = db.search(where(data_key) == data_value)
 
-            if answer is not []:
+            if len(answer) is not 0:
                 answer_list.append(answer[0]["form_name"])
         
         form_names = Counter(answer_list)
