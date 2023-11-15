@@ -11,31 +11,33 @@ class UserEmail(BaseModel):
     user_email: EmailStr
 
 class PhoneNumber(BaseModel):
-    phone_number: str
+    user_phone: str
 
-    @validator("phone_number")
-    def check_phone_number(cls, v):
-        regExs = (r"^79\s*\d{2}\s*\d{3}\s*\d{2}\s*\d{2}$")
+    @validator("user_phone")
+    def check_user_phone(cls, v):
+        regExs = (r"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$")
         if not re.search(regExs[0], v):
             return ValueError("not match")
         return v
 
 class Date(BaseModel):
-    registry_date: dt.date
+    reg_date: dt.date
 
-    # @validator("date")
-    # def check_date_format(cls, v):
-    #     if v != dt.date.strftime("%d%d.%m%m.%Y%Y"):
-    #         return ValueError("not match")
-    #     return v
+    @validator("reg_date", pre=True)
+    def parse_reg_date(cls, v):
+        date = dt.datetime.strptime(
+            v,
+            "%Y-%m-%d"
+        ).date()
+        return date
 
 class Text(BaseModel):
-    text: str
+    hello_text: str
 
 PY_MODELS = {
     "form_name": FormName,
-    "date": Date,
-    "text": Text,
+    "reg_date": Date,
+    "hello_text": Text,
     "user_email": UserEmail,
-    "phone_number": PhoneNumber
+    "user_phone": PhoneNumber
 }

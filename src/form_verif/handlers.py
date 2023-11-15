@@ -1,5 +1,6 @@
 from .schemas import PY_MODELS
 from fastapi import HTTPException, status
+from collections import Counter
 
 
 def check_fields_in(
@@ -14,11 +15,20 @@ def check_fields_in(
         if valid_data is not None:
             return valid_data.dict()
         return None
-    
-def check_list_equal(
-        answer_list
+
+
+def quary_num_equal_fields_num(
+        form_names_list,
+        fields_num
 ):
-   answer =  all(
-        answer_list[i] < answer_list[i+1] for i in range(len(answer_list)-1)
-    )
-   return answer
+    form_names = Counter(form_names_list)
+    form_equal = []
+    form_names_dict = dict(form_names)
+    for form_name in form_names_dict.keys():
+        if form_names_dict[form_name] != fields_num:
+            form_equal.append(False)
+        else:
+            form_equal.append(True)
+    if True not in form_equal:
+        return False
+    return form_name
